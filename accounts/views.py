@@ -75,7 +75,7 @@ def home(request):
 	# 'total_orders':total_orders,'delivered':delivered,
 	# 'pending':pending }
 
-	return render(request, 'accounts/dashboard2.html', context)
+	return render(request, 'accounts/home.html', context)
 
 @login_required(login_url='login')
 def userPage(request):

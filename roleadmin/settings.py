@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # 'accounts',
     'myapi',
+    'myapp',
 
     'accounts.apps.AccountsConfig',    
     
