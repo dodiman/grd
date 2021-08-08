@@ -1,0 +1,113 @@
+{% extends 'mydata/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/spinner1/common.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/spinner1/style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/skeleton/index.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/mycss.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<div id="root"></div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- jquery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+<!-- bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js ' %}"></script>
+
+<!-- adminLTE -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<script src="{% static 'dist/js/demo.js' %}"></script>
+{% endblock %}
+
+
+{% block scripts %}
+
+	<!-- reactjs -->
+	<script src="{% static 'js/react.production.min.js' %}"></script>
+	<script src="{% static 'js/react-dom.production.min.js' %}"></script>
+	<script src="{% static 'js/react-router-dom.min.js' %}"></script>
+
+	<!-- axios -->
+	<script src="{% static 'js/axios.min.js' %}"></script>
+
+	<!-- tambahan pelengkap -->
+	<script src="{% static 'js/plugins_reactjs/emotion.umd.min.js' %}"></script>
+	<script src="{% static 'js/plugins_reactjs/prop-types.min.js' %}"></script>
+
+
+	<!-- bebal -->
+	<script src="{% static 'js/babel.min.js' %}"></script>
+
+
+	<!-- component -->
+	<script type="text/babel" src="{% static 'js/component/services.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/Home.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/Paginasi.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/TombolSatu.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/SpinnerSatu.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/FullSpinner.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/SkeletonSatu.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/FullSkeleton.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/ListData.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/CurrentData.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/PaginationComponent.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/Pagination.js' %}"></script>
+	<script type="text/babel" src="{% static 'js/component/LoadMore.js' %}"></script>
+
+
+	<script>
+		let path = '{{ request.path }}';
+		let fullnya = '{{ request.build_absolute_uri}}';
+		let base_dir1 = fullnya.slice(0, -(path.length));
+		let base_dir = `${base_dir1}/mydata/api`;
+
+		let pathfilter = `${base_dir1}/mydata/filter_anggota/`;
+
+		let myform = document.getElementById('myform');
+	</script>
+	<script type="text/babel">
+		// http-common  (base_dir1 : http://127.0.0.1:8000)
+		const http = axios.create({
+			baseURL: `${base_dir1}`,  
+			headers: {
+				"Content-type": "application/json"
+			}
+		});
+
+		// pengganti import 
+		const { Link, NavLink, Switch, Router, Route } = ReactRouterDOM;
+		const { useHistory } = ReactRouterDOM;
+
+		const Myapp = () => {
+			console.log('selamat datang di log reactjs');
+			return (
+				<React.Fragment>
+					<ReactRouterDOM.HashRouter>
+						<ul>
+							<li><NavLink to="/"> Home </NavLink></li>
+							<li><NavLink to="/paginasi"> Paginasi </NavLink></li>
+						</ul>
+
+					<Switch>
+						<Route exact path="/" component={Home} />
+						<Route exact path="/paginasi" component={Paginasi} />
+					</Switch>
+					</ReactRouterDOM.HashRouter>
+				</React.Fragment>
+			)
+		}
+
+		
+
+		ReactDOM.render(<Myapp />, document.getElementById('root'));
+	</script>
+
+{% endblock %}

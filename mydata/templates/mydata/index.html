@@ -1,0 +1,374 @@
+{% extends 'mydata/base.html' %}
+{% load static %}
+
+{% block styles %}
+<!-- Select2 -->
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	
+  <div class="row">
+    <div class="col col-sm-6">
+      <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Myform</h3>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="card-body">
+        
+        <div class="form-group">
+          <label> Silakan Masukkan Nama Desa/Kelurahan</label>
+      <div id="root">
+        
+      </div>
+    </div>
+  </div>  <!-- end card body -->
+
+  <div class="card-footer">
+    <button type="submit" class="btn btn-warning">OKE</button>
+  </div>
+    </form>
+  </div> <!-- end card -->
+    </div>  <!-- end col -->
+    <div class="col col-sm-6">
+      <h2>selamat datang di hasil filter</h2>
+      <div id="filter_data">
+      </div>
+    </div> <!-- end col -->
+  </div>   <!-- end row -->
+  <div class="row">
+    <div class="col col-sm-6">
+    <h2>Hasil</h2>
+    <span>lihat alamat: {{ request.build_absolute_uri }}</span>
+    <p>ini: {{ tampung }}</p>
+    <hr />
+    <br />
+    <br />
+    <button onclick="UntukPost();">POST</button>
+    <p> </p>
+
+  </div>    <!-- end col -->
+  <div class="col col-sm-6" id="myapp">
+    
+  </div>
+</div>    <!-- end row -->
+<div class="row">
+  <div class="col col-sm-6">
+    <div id="indexapp">
+    </div>
+  </div> <!-- end col -->
+</div> <!-- end row -->
+
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  $(document).ready(function() {
+    //Initialize Select2 Elements
+    $('.select2').select2();
+
+    //Initialize Select2 Elements
+    // $('.select2bs4').select2({
+    //   theme: 'bootstrap4'
+    // })
+
+  });
+
+  
+
+  </script>
+
+
+<!-- reactjs plugins -->
+<script src="{% static 'js/react.production.min.js' %}"></script>
+<script src="{% static 'js/react-dom.production.min.js' %}"></script>
+<script src="{% static 'js/react-router-dom.min.js' %}"></script>
+
+<!-- axios -->
+<script src="{% static 'js/axios.min.js' %}"></script>
+
+<!-- reactjs select menggunakan source online -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/emotion@9.2.12/dist/emotion.umd.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.5.10/prop-types.min.js"></script>
+<script src="https://unpkg.com/react-input-autosize@2.2.1/dist/react-input-autosize.min.js"></script>
+<script src="https://unpkg.com/react-select@2.1.2/dist/react-select.min.js"></script> -->
+
+<!-- reactjs select menggunakan source offline -->
+<script src="{% static 'js/plugins_reactjs/emotion.umd.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/prop-types.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/react-input-autosize.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/react-select.min.js' %}"></script>
+
+
+<!-- form -->
+<script src="{% static 'js/plugins_reactjs/react-hook-forms.js' %}"></script>
+
+
+<script src="{% static 'js/babel.min.js' %}"></script>
+
+<script>
+  let coba = "{{ data_js }}";
+  async function UntukPost() {
+    let currentPath = '{{ request.build_absolute_uri }}';
+    let basenya = currentPath.slice(0, -7);
+    let base_url = `${basenya}mydata/api_anggota`;
+    let payload = {nama: 'manual', alamat: 'KONDOWA', status: 'ANGGOTA'};
+    let res = await axios.post(base_url, payload);
+    let data = res.data
+    console.log(base_url);
+  }
+
+</script>
+
+<script type="text/babel">
+
+  // pengganti import
+  const Link = ReactRouterDOM.Link;
+  const Route = ReactRouterDOM.Route;
+  const Switch = ReactRouterDOM.Switch;
+
+
+  const IndexApp = () => {
+    return (
+      <ReactRouterDOM.HashRouter>
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/login">Login</Link></li>
+            <li><Link to="/register">Register</Link></li>
+          </ul>
+
+          <Switch>
+          <Route exact path = '/'><Getdata /> </Route>
+          <Route path = '/login'><h2>dua</h2> </Route>
+          <Route path = '/register'><h2>tiga</h2> </Route>
+          </Switch>
+
+      </ReactRouterDOM.HashRouter>
+    )
+  }
+
+  const Home = () => {
+    return (
+      <div>
+        <p>ini satu</p>
+      </div>
+    )
+  }
+
+  const Login = () => {
+    return (
+      <div>
+        <p>ini dua</p>
+      </div>
+    )
+  }
+
+  const Register = () => {
+    return (
+      <div>
+        <p>ini tiga</p>
+      </div>
+    )
+  }
+
+  const DataAnggota = () => {
+    return (
+      <div>
+      </div>
+    )
+  }
+
+  const Getdata = () => {
+    
+    const [dataAnggota, setDataAnggota] = React.useState(null);
+
+    React.useEffect(() => {
+    let currentPath = '{{ request.build_absolute_uri }}';
+    let basenya = currentPath.slice(0, -7);
+    let base_url = `${basenya}mydata/api_anggota`;
+    
+    axios.get(base_url)
+        .then(response => {
+          const semuaAnggota = response.data;
+          setDataAnggota(semuaAnggota);
+          
+        })
+        .catch(error => console.log(error));
+
+     }, []);
+
+     console.log(dataAnggota);
+
+    return (
+      <div>
+        <p>ini adalah mydata</p>
+        <ul>
+            { dataAnggota && dataAnggota.map(value => <li>{value.nama}</li>)}         
+        </ul>
+      </div>
+    )
+  }  
+
+  const ShowData = (props) => {
+
+    const [nama, alamat] = props;
+    return (
+      <div>
+          <h3>child</h3>
+      </div>
+    )
+  }
+
+  const App = () => {
+    function renameKey(obj, oldKey, newKey) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    }
+
+  const option = [
+    { value: 'satu', label: 'satu'},
+    { value: 'dua', label: 'dua'},
+    { value: 'tiga', label: 'tiga'},
+    { value: 'empat', label: 'empat'},
+  ];
+
+  let defaultnya = [
+    { value: "{{ tampung }} ", label: "{{ tampung }}"},
+
+  ];
+ 
+
+  const [region, setRegion] = React.useState(option[0]);
+  const [currentCountry, setCurentCountry] = React.useState(null);
+  const [mydata, setMydata] = React.useState([]);
+  const [tampil, setTampil] = React.useState(null);
+  const [kondisi, setKondisi] = React.useState("{{ tampung }}");
+
+  
+
+
+
+  React.useEffect(() => {
+    
+    axios.get('http://127.0.0.1:8000/mydata/api')
+        .then(response => {
+          setMydata(response.data);
+          
+        });
+
+     }, []);
+
+  const [pilihan, setPilihan] = React.useState('kombeli');
+  
+  React.useEffect(() => {
+      inifungsi();
+  }, []);
+
+
+  async function inifungsi() {
+    const {data} = await axios.get(`http://127.0.0.1:8000/mydata/filter_anggota/${pilihan}`);
+    // setPilihan(data);
+    console.log('fungsi async');
+    console.log(data);
+  }
+
+  const onChangeSelect = (item) => {
+    console.log(item.value);
+    inifungsi();
+    setPilihan(item.value);
+  }; 
+
+  
+
+  console.log(`pilihan: ${pilihan}`);
+  
+
+
+    if(kondisi == "kosong") {
+      return (
+      <div>
+        <Select 
+          onChange = {onChangeSelect}
+          name = "pilih"
+          options = {mydata}
+        />
+      </div>
+    )
+    }
+    else {
+     return (
+      <div>
+        <Select 
+          defaultValue={defaultnya[0]}
+          onChange = {onChangeSelect}
+          name = "pilih"
+          options = {mydata}
+        />
+        
+      </div>
+    ) 
+    }
+    
+  }
+
+  const FilterData = () => {
+    let awalnya = "{{ tampung }}";
+    let b_url = `http://127.0.0.1:8000/mydata/filter_anggota/${awalnya}`;
+
+    const [dataku, setDataku] = React.useState([]);
+    React.useEffect(() => {
+    
+    axios.get(b_url)
+        .then(response => {
+          const semuaAnggota = response.data;
+          setDataku(semuaAnggota);
+          
+        })
+        .catch(error => console.log(error));
+
+     }, []);
+    return (
+      <div>
+        <p>filter data</p>
+        <p>
+            { dataku.map(value => {
+              return(
+                <div>
+                <p>Nama: {value.nama}, ID: {value.id}, Alamat: {value.alamat} </p> <br />
+                </div>
+              )
+            })}
+        </p>
+      </div>
+    )
+  }
+
+  ReactDOM.render(<App />, document.getElementById('root'));
+
+  ReactDOM.render(<Getdata />, document.getElementById('myapp'));
+  ReactDOM.render(<IndexApp />, document.getElementById('indexapp'));
+
+  ReactDOM.render(<FilterData />, document.getElementById('filter_data'));
+</script>
+{% endblock %}

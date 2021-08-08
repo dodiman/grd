@@ -1,14 +1,28 @@
-.skeletonsatu {
-	width: 70px;
-	height: 70px;
-
+* {
+	box-sizing: border-box;
 }
-
-.skeletondua {
-	flex-wrap: wrap;
+.box {
+	border-bottom: 1px solid #ccc;
 }
-
-/* untuk spinner */
+.card {
+	position: relative;
+	width: 175px;
+	height: 200px;
+	display: inline-block;
+}
+.card > div {
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+.col {
+	min-width: 20%;
+	float: left;
+}
 .spinner {
 	position: relative;
 	width: 50px;

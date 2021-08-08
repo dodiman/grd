@@ -40,10 +40,13 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'django_extensions',
+    'import_export',
 
     # 'accounts',
     'myapi',
     'myapp',
+    'mydata',
 
     'accounts.apps.AccountsConfig',    
     
@@ -131,8 +134,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-# MEDIA_URL = '/images/'
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')

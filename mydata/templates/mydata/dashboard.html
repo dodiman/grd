@@ -1,0 +1,405 @@
+{% extends 'mydata/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+	<div class="row no-print">
+		
+		<div class="col col-sm-6">
+      <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Myform</h3>
+      </div>
+      <form method="post" id="myform">
+        {% csrf_token %}
+        <!-- <input type="hidden" name="csrfmiddlewaretoken" value="k8QTGOrNbuXbaRIWpw048I5zKz67vhqEj6PchNVzmT4LCjcoSfzY0YBt7v7nCGw6"> -->
+        <div class="card-body">
+        
+        <div class="form-group">
+          <label> Silakan Masukkan Nama Desa/Kelurahan</label>
+      		<div id="root"></div>
+   		 </div>
+   		 <div class="form-group">
+   		 	<label>{{ csrf_token }}</label>
+   		 </div>
+   		</div>
+   		<div class="card-footer">
+    <button type="submit" class="btn btn-warning btn-sm">LIHAT</button>
+  </div>
+   	</form>
+   </div>
+	</div> <!-- end col -->
+	<div class="col col-sm-6">
+		<div class="card card-primary">
+			<div class="card-header">
+				<div class="card-title">Form2 handle lewat reactjs</div>
+			</div>
+				<div id="formApp"></div>
+		</div>
+	</div>
+	</div>  <!-- end row -->
+	<div class="row">
+		<div class="col col-sm-12">
+			<div id="myfilterdata"></div>
+		</div>  <!-- end col -->
+	</div> <!-- end row -->
+</div>
+{% endblock %}
+
+
+{% block script %}
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+	if (global == undefined) {
+		var global = window;
+	}
+</script>
+
+<!-- reactjs plugins -->
+<script src="{% static 'js/react.production.min.js' %}"></script>
+<script src="{% static 'js/react-dom.production.min.js' %}"></script>
+<script src="{% static 'js/react-router-dom.min.js' %}"></script>
+
+<!-- axios -->
+<script src="{% static 'js/axios.min.js' %}"></script>
+
+<!-- reactjs select menggunakan source offline -->
+<script src="{% static 'js/plugins_reactjs/emotion.umd.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/prop-types.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/react-input-autosize.min.js' %}"></script>
+<script src="{% static 'js/plugins_reactjs/react-select.min.js' %}"></script>
+
+<script src="{% static 'js/plugins_reactjs/react-paginate.js' %}"></script>
+
+<!-- form -->
+<script src="{% static 'js/plugins_reactjs/react-hook-forms.js' %}"></script>
+
+<script src="{% static 'js/babel.min.js' %}"></script>
+
+<script>
+
+
+	let path = '{{ request.path }}';
+	let fullnya = '{{ request.build_absolute_uri}}';
+	let base_dir1 = fullnya.slice(0, -(path.length));
+	let base_dir = `${base_dir1}/mydata/api`;
+
+	let pathfilter = `${base_dir1}/mydata/filter_anggota/`;
+
+	let myform = document.getElementById('myform');
+</script>
+<script type="text/babel">
+	const App = () => {
+
+		const [mydata, setMydata] = React.useState([]);
+		const [urlFilter, setUrlFilter] = React.useState([]);
+		const [myitem, setMyitem] = React.useState([]);
+		const [myurl, setMyurl] = React.useState('http://127.0.0.1:8000/mydata/filter_anggota/KONDOWA');
+		const [isLoading, setIsLoading] = React.useState(false);
+
+		const onChangeSelect = (item) => {
+
+		    axios.get(`${pathfilter}${item.value}`).then(response => {
+		    	setMyitem(response.data);
+		    });
+		    
+
+		 };
+
+		console.log(`pilihanku adalah: ${myitem}`);
+		console.log(`url adalah: ${myurl}`);
+
+		React.useEffect(() => {
+
+		    axios.get(base_dir)
+		        .then(response => {
+		          setMydata(response.data);
+		          
+		        });
+
+		     }, []);
+
+		     
+
+		return (
+			<div>
+				
+				<Select 
+				  onChange = {onChangeSelect}
+		          name = "pilih"
+		          options = {mydata}
+		        />
+		        <div>
+		        	{myitem.map(value => {
+		        		return (
+		        			<p>{value.nama}</p>
+		        		)
+		        	})}
+		        </div>
+			</div>
+		)
+	}
+
+	const FormApp = () => {
+		const { register, handleSubmit } = ReactHookForm.useForm();
+		const onSubmit = (data, e) => console.log(data, e);
+		const onError = (errors, e) => console.log(errors, e);
+
+		const [mydata, setMydata] = React.useState([]);
+		const [myitem, setMyitem] = React.useState([]);
+		const methods = ReactHookForm.useForm();
+
+		
+
+		React.useEffect(() => {
+
+		   {/* axios.get(base_dir)
+		        .then(response => {
+		          setMydata(response.data);
+		          
+		        });*/}
+
+		        const onChangeSelect = (item) => {
+				    console.log(item.value);    // satu kata contohnya seperti KONDOWA
+				    setMyitem(item.value);
+
+				 };
+
+		        console.log('ini dalam react use effect');
+		        console.log(myitem);
+
+		     }, [myitem]);
+
+		return (
+			<div>
+				<form onSubmit={handleSubmit(onSubmit, onError)}>
+				<div className="card-body">
+				<div className="form-group">
+				<label>Plilh </label>
+				<input type="text" name="coba" className="form-control" {...register("coba")} />
+				</div>
+
+				<div className="form-group">
+				<label>Dua </label>
+				<ReactHookForm.Controller 
+				  control = {methods.control}
+		          name = "pilih"
+		          {...register("pilih")}
+		          render ={ ({onChange, value, name, ref}) => (
+		          	<Select
+		          		inputRef = {ref}
+		          		options={mydata}
+		          		
+		          	/>
+		          	)}
+		          
+		        />
+				</div>
+				</div>
+
+
+				<div className="card-footer">
+					 <button type="submit" className="btn btn-warning btn-sm">LIHAT</button>
+				</div>
+				</form>
+			</div>
+		)
+	}
+
+	const Seleksi = (props) => {
+		const [mydata, setMydata] = React.useState([]);
+		const [myitem, setMyitem] = React.useState([]);
+		
+		const onChangeSelect = (item) => {
+			console.log(item.value);
+			axios.get(`${pathfilter}${item.value}`).then(response => {
+		    	setMyitem(response.data);
+		    });
+		};
+
+		React.useEffect(() => {
+
+		    axios.get(base_dir)
+		        .then(response => {
+		          setMydata(response.data);
+		          
+		        });
+
+		     }, []);
+
+		return (
+			<React.Fragment>
+			<content className="content-header">
+		   <div className="card">
+		   <div className="card-header">
+		   	<h3 className="card-tile">Filter Data</h3>
+		   </div>
+		   <div className="card-body">
+		   <Select 
+				  onChange = {onChangeSelect}
+		      name = "pilih"
+		      options = {mydata}
+		   />
+		   <hr />
+		   	<table className="table table-bordered">
+		   		<thead>
+		   			<tr>
+		   				<th>Id</th>
+		   				<th>Nama</th>
+		   				<th>Alamat</th>
+		   				<th>Keterangan</th>
+		   			</tr>
+		   		</thead>
+		   			
+		   			{ myitem && myitem.map(value => <tr>
+		   				<td>{value.id}</td>
+		   				<td>{value.nama}</td>
+		   				<td>{value.alamat}</td>
+		   				<td>{value.status}</td>
+
+		   			</tr>) }
+		   		<tbody>
+		   		</tbody>
+		   	</table>
+			
+		   </div> {/* end card-body  */}
+		   </div>  {/* end card */}
+		   </content>
+		   </React.Fragment>
+		);
+	};
+
+	const SeleksiInvoice = (props) => {
+		const [mydata, setMydata] = React.useState([]);
+		const [myitem, setMyitem] = React.useState([]);
+		
+		const onChangeSelect = (item) => {
+			console.log(item.value);
+			axios.get(`${pathfilter}${item.value}`).then(response => {
+		    	setMyitem(response.data);
+		    });
+		};
+
+		React.useEffect(() => {
+
+		    axios.get(base_dir)
+		        .then(response => {
+		          setMydata(response.data);
+		          
+		        });
+
+		     }, []);
+
+		const eventnya = () => {
+			
+			window.print();
+
+		}
+
+		return (
+			<React.Fragment>
+		   <div className="card">
+		   <content className="content-header">
+		   <div className="card-header">
+		   	<h3 className="card-tile">Invoice</h3>
+		   </div>
+		   </content>
+		   <div className="card-body">
+			<content className="content-header">
+		   <Select 
+				  onChange = {onChangeSelect}
+		      name = "pilih"
+		      options = {mydata}
+		   />
+		   <hr />
+		  </content>
+		   <content className="content">
+		   <div class="container-fluid">
+		   <div className="row">
+		   <div className="col-12">
+
+		 {/* header laporan */}
+		   <div className="callout callout-info">
+		   	INI ADALAH HEADER LAPORAN
+		   </div>
+		 {/* end header laporan */}
+		 		<div className="invoice p-3 mb-3">
+		  	<div className="row">
+		  		<div className="col-12 table-responsive">
+
+		   	<table className="table table-striped">
+		   		<thead>
+		   			<tr>
+		   				<th>Id</th>
+		   				<th>Nama</th>
+		   				<th>Alamat</th>
+		   				<th>Keterangan</th>
+		   			</tr>
+		   		</thead>
+		   			
+		   			{ myitem && myitem.map(value => <tr>
+		   				<td>{value.id}</td>
+		   				<td>{value.nama}</td>
+		   				<td>{value.alamat}</td>
+		   				<td>{value.status}</td>
+
+		   			</tr>) }
+		   		<tbody>
+		   		</tbody>
+		   	</table>
+		   	</div>
+		  	</div>
+		   	 </div> {/* end invoice p-3 mb-3 */}
+		   </div> {/* end col-12 */}
+		   </div> {/* end row */}
+		   <div className="row no-print">
+		   		<div className="col-12">
+		   	<span onClick={eventnya} className="btn btn-default"><i className="fas fa-print"></i> Print</span>
+		   </div> {/* end col-12 */}
+		   </div> {/* end row no-print */}
+
+		   </div> {/* end container-fluid */}
+			</content>
+
+		   </div> {/* end card-body  */}
+		   </div>  {/* end card */}
+		   
+		   </React.Fragment>
+		);
+	}
+
+	const FilterData = () => {
+		console.log('ini parent');
+		
+
+		return (
+			<React.Fragment>
+				
+				<Seleksi name="ini adalah nama" />
+				<SeleksiInvoice name="ini adalah nama" />
+
+			</React.Fragment>
+		)
+	}
+
+	ReactDOM.render(<App />, document.getElementById('root'));
+	ReactDOM.render(<FormApp />, document.getElementById('formApp'));
+	ReactDOM.render(<FilterData />, document.getElementById('myfilterdata'));
+</script>
+{% endblock %}

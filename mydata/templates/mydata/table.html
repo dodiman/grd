@@ -1,0 +1,520 @@
+{% extends 'mydata/base.html' %}
+
+{% load static %}
+{% block styles %}
+ <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+<div id="myapp"></div>
+<div class="row">
+<div class="col-12">
+<div class="card">
+	<div class="card-header">
+		<h4 class="card-title">Data </h4>
+	</div>
+	<div class="card-body">
+
+	<!-- ========================================================== -->
+
+
+
+	<!-- ========================================================== -->
+
+		<div id="root"></div>
+	</div>
+</div> <!-- end card -->
+</div> <!-- end col-12 -->
+</div> <!-- end row -->
+
+
+{% endblock %}
+
+{% block script %}
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+
+<!-- DataTables  & Plugins -->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+
+<!-- reactjs plugins -->
+<script src="{% static 'js/react.production.min.js' %}"></script>
+<script src="{% static 'js/react-dom.production.min.js' %}"></script>
+<script src="{% static 'js/react-router-dom.min.js' %}"></script>
+
+<!-- axios -->
+<script src="{% static 'js/axios.min.js' %}"></script>
+
+<!-- babel -->
+<script src="{% static 'js/babel.min.js' %}"></script>
+
+<script>
+   
+</script>
+
+<script>
+	let path = '{{ request.path }}';
+	let fullnya = '{{ request.build_absolute_uri}}';
+	let base_dir1 = fullnya.slice(0, -(path.length));
+	let base_dir = `${base_dir1}/mydata/api`;
+
+	let pathfilter = `${base_dir1}/mydata/filter_anggota/`;
+
+	let myform = document.getElementById('myform');
+</script>
+
+
+<!-- text/babel -->
+<script type="text/babel">
+
+const Mynav = () => {
+	return (
+		<React.Fragment>
+			<p>ini adalah Mynav</p>
+		</React.Fragment>
+	)
+}
+
+const App = () => {
+	const [posts, setPost] = React.useState([]);
+	const [loading, setLoading] = React.useState(false);
+	const [currentPage, setCurrentPage] = React.useState(1);
+	const [postPerPage] = React.useState(5);
+
+	React.useEffect(() => {
+		const fetchPost = async () => {
+			setLoading(true);
+			const res = await axios.get(`${base_dir1}/mydata/api_anggota`);
+			setPost(res.data);
+			setLoading(false);
+		};
+
+		fetchPost();
+
+	}, []);
+
+	// get current post
+	const indexOfLastPost = currentPage * postPerPage;
+	const indexOfFirstPost = indexOfLastPost - postPerPage;
+	const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+	// change page
+	const paginate = pageNumbers => setCurrentPage(pageNumbers);
+
+	return (
+		<React.Fragment>
+			<Mynav />
+			<Post posts={currentPosts} loading={loading} />
+			<Paginasi postsPerPage={postPerPage} totalPosts={posts.length} paginate={paginate} indexOfLastPost={indexOfLastPost} />
+		</React.Fragment>
+	)
+};
+
+const Post = ({posts, loading}) => {
+	if (loading) {
+		return (
+			<React.Fragment>
+				<h2>Loading ... </h2>
+			</React.Fragment>
+		)
+	}
+
+	return (
+		<React.Fragment>
+			<h2>Tampil Datanya</h2>
+			<ul>
+				{posts.map((value) => (
+					<li key={value.id}>{value.nama}</li>
+				))}
+			</ul>
+		</React.Fragment>
+	)
+};
+
+const Paginasi = ({postsPerPage, totalPosts, paginate, indexOfLastPost}) => {
+	
+	const pageNumbers = [];
+	let nomornya = 0;
+
+	if (indexOfLastPost > totalPosts) {
+		nomornya = totalPosts;
+	} 
+	else {
+		nomornya = indexOfLastPost;
+	}
+
+	const baru = Math.ceil(totalPosts / postsPerPage);
+	for (let i=1; i<= Math.ceil(totalPosts / postsPerPage); i++) {
+		pageNumbers.push(i);
+	}
+	
+
+	return (
+		<React.Fragment>
+			<h2>Muncul Paginasi</h2>
+			<h4>{nomornya} dari {totalPosts} Data</h4>
+			{pageNumbers.map((value) => (
+				<span key={value}>
+					<button onClick={() => paginate(value)} >
+					{value}
+					</button>
+				</span>
+			))}
+		</React.Fragment>
+	)
+}
+
+
+
+
+// pengganti import
+  const {Link, Route, Switch, HashRouter, Router} = ReactRouterDOM;
+  const { useHistory } = ReactRouterDOM;
+
+function HomeButton() {
+  let history = useHistory();
+
+  function handleClick() {
+    history.push("/dua");
+    console.log('dan run lagi');
+  }
+
+  return (
+    <button type="button" onClick={handleClick}>
+      Go home
+    </button>
+  );
+}
+
+const Kembali = () => {
+  let history = useHistory();
+
+  function handleClick() {
+    history.goBack();
+    console.log('dan run lagi');
+  }
+
+  return (
+    <button type="button" onClick={handleClick}>
+      Kembali
+    </button>
+  );
+}
+
+// myapp
+const Myapp = () => {		
+
+	const refreshPage = () => {
+		window.location.reload(false);
+	}
+
+	return (
+		<React.Fragment>
+			
+			<HashRouter>
+			<div className="row">
+			<div className="col-log-3 col-6">
+				<h3>selamat datang di button</h3>
+				<HomeButton />
+				
+			</div>
+			</div>
+			<div className="row">
+			<div className="col-log-3 col-6">
+				<h3>selamat datang di button</h3>
+				<Kembali />
+				
+			</div>
+			</div>
+			<div className="row">
+				<div className="col-lg-3 col-6">
+					<div className="small-box bg-info">
+						<div className="inner">
+							<h3 onClick={refreshPage}>150</h3>
+							<p> New Order</p>
+						</div> {/* end inner */}
+						<div className="icon">
+                <i className="ion ion-bag"></i>
+             </div> {/* end icon */}
+             <Link to="/" className="small-box-footer">More info <i className="fas fa-arrow-circle-right"></i></Link>
+
+					</div> {/* end small-box */}
+				</div> {/* end col-lg-3 */}
+				
+
+				<div className="col-lg-3 col-6">
+            {/*  small box */}
+            <div className="small-box bg-success">
+              <div className="inner">
+                <h3>53<sup styleName="font-size: 20px">%</sup></h3>
+
+                <p>Bounce Rate</p>
+              </div>
+              <div className="icon">
+                <i className="ion ion-stats-bars"></i>
+              </div>
+              <Link to="/dua" className="small-box-footer">More info <i className="fas fa-arrow-circle-right"></i></Link>
+            </div>
+          </div>  {/* end col-lg-3 */}
+
+          <div className="col-lg-3 col-6">
+            {/*  small box */}
+            <div className="small-box bg-warning">
+              <div className="inner">
+                <h3>44</h3>
+
+                <p>User Registrations</p>
+              </div>
+              <div className="icon">
+                <i className="ion ion-person-add"></i>
+              </div>
+              <Link to="/tiga" className="small-box-footer">More info <i className="fas fa-arrow-circle-right"></i></Link>
+            </div>
+          </div> {/* end col-lg-3 */}
+
+			</div> {/* end row */}
+
+			<Switch>
+				<Route exact path = '/'><h2>dua</h2></Route>
+				<Route path="/dua"><TabelDua /></Route>
+				<Route path="/tiga"><Mytable /></Route>
+			</Switch>
+			</HashRouter>
+		</React.Fragment>
+	)
+}
+
+const TabelDua = () => {
+
+	React.useEffect(() => {
+		
+		$(function () {
+    var table = $("#example1").DataTable({
+    	"processing": true,
+    	"ajax": {
+    		"url": `${base_dir1}/mydata/api_anggota`,
+    		"dataSrc": ""
+    	},
+    	"columns": [
+    		{"data": "id"},
+    		{"data": "nama"},
+    		{"data": "alamat"},
+    	],
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+
+      initComplete: function () {
+                table.buttons().container()
+                    .appendTo( $('.col-md-6:eq(0)', table.table().container() ) );
+            }
+    });
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+
+
+	}, []);
+
+	return (
+		<React.Fragment>
+		<div className="row">
+				<div className="col-12">
+					<div className="card">
+						<div className="card-header">
+							<h3 className="card-title">Mantap Jiwa</h3>
+						</div> {/* end card-header */}
+						<div className="card-body">
+							{/* ============================================================== */}
+			<table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Alamat</th>
+                  </tr>
+                  </thead>
+                  
+                
+                  
+                </table>
+                {/* ================================================================*/}
+						</div> {/* end card-body */}
+					</div> {/* end card */}
+				</div> {/* end col-12 */}
+			</div> {/* end row */}
+		</React.Fragment>
+	)
+}
+
+const Mytable = () => {
+
+	React.useEffect(() => {
+
+		$(function () {
+    $("#example1").DataTable({
+    	"processing": true,
+    	"ajax": {
+    		"url": `${base_dir1}/mydata/api_anggota`,
+    		"dataSrc": ""
+    	},
+    	"columns": [
+    		{"data": "id"},
+    		{"data": "nama"},
+    		{"data": "alamat"},
+    	],
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $('#example2').DataTable({
+    	"processing": true,
+    	"ajax": {
+    		"url": `${base_dir1}/mydata/api_anggota`,
+    		"dataSrc": ""
+    	},
+    	"columns": [
+    		{"data": "id"},
+    		{"data": "nama"},
+    		{"data": "alamat"},
+    	],
+
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+
+		console.log(`ini react effect`);
+	}, []);
+
+	return (
+		<React.Fragment>
+			<div className="row">
+				<div className="col-12">
+					<div className="card">
+						<div className="card-header">
+							<h3 className="card-title">Mantap Jiwa</h3>
+						</div> {/* end card-header */}
+						<div className="card-body">
+							{/* ============================================================== */}
+							<table id="example1" className="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>nama</th>
+                    <th>alamat</th>
+                  </tr>
+                  </thead>
+                  {/* 
+                  <tbody>
+                  <tr>
+                    <td>Trident</td>
+                    <td>Internet
+                      Explorer 4.0
+                    </td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+                  </tr>
+                  
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                  </tfoot>
+                */}
+                </table>
+							{/* ================================================================*/}
+						</div> {/* end card-body */}
+					</div> {/* end card */}
+				</div> {/* end col-12 */}
+			</div> {/* end row */}
+		</React.Fragment>
+	)
+};
+
+const Cobasatu = () => {
+	const [posts, setPost] = React.useState([]);
+	const [loading, setLoading] = React.useState(false);
+
+	React.useEffect(() => {
+
+		const fetchPost = async () => {
+			setLoading(true);
+			const res = await axios.get(`${base_dir1}/mydata/api_anggota`);
+			setPost(res.data);
+			setLoading(false);
+		};
+
+		fetchPost();
+	}, [])
+
+	return (
+		<React.Fragment>
+			{ posts.map(value => (
+				<tr key={value.id}>
+					<td>{value.nama}</td>
+					<td>Internet Explorer 4.0</td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+				</tr>
+				)) }
+									<tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 4.0</td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+                  </tr>
+
+                  
+		</React.Fragment>
+	)
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Myapp />, document.getElementById('myapp'));
+</script>
+
+{% endblock %}
